@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CockpitLab - Boarding Pass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="icon" type="image/png" href="./site_airbus/icon_debug.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+-webkit-tap-highlight-color: transparent;
+}
+
+:root {
+--navy: #002447;
+--white: #FFFFFF;
+--line: rgba(255,255,255,0.15);
+--muted: rgba(255,255,255,0.55);
+--green: #2ED573;
+--red: #FF4757;
+--page-pad: clamp(16px, 4vw, 64px);
+--gap: clamp(20px, 3vw, 40px); 
+--radius: 16px;
+}
+
+html, body {
+height: 100%;
+font-family: 'Montserrat', sans-serif;
+color: var(--white);
+-webkit-font-smoothing: antialiased;
+overflow-x: hidden;
+}
+
+/* ── BACKGROUND ─────────────────────────── */
+body {
+background-image: url('./site_airbus/cockpitlab_image.png');
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+position: relative;
+}
+
+body::before {
+content: '';
+position: fixed;
+inset: 0;
+background: linear-gradient(
+160deg,
+rgba(38, 49, 61, 0.78) 0%,
+rgba(17, 21, 25, 0.7) 50%,
+rgba(38, 49, 61, 0.78) 100%
+);
+z-index: 0;
+}
+
+/* ── PAGE SHELL ─────────────────────────── */
+.page {
+position: relative;
+z-index: 1;
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+padding: 0 var(--page-pad);
+max-width: 1280px;
+margin: 0 auto;
+width: 100%;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+header {
+padding: clamp(22px, 4vh, 52px) 0 clamp(14px, 2.5vh, 28px);
+text-align: left;
+width: 100%;
+}
+
+.brand {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 10px;
+margin-bottom: clamp(16px, 2.8vh, 30px);
+}
+
+.brand-logo {
+height: clamp(22px, 2.8vw, 36px);
+width: auto;
+display: block;
+background: rgba(255,255,255,0.08);
+border-radius: 4px;
+min-width: 80px;
+}
+
+.brand-sep {
+width: 1px;
+height: clamp(16px, 2vw, 24px);
+background: rgba(255,255,255,0.25);
+flex-shrink: 0;
+}
+
+.brand-name {
+font-size: clamp(11px, 0.8vw, 13px);
+font-weight: 700;
+letter-spacing: 0.20em;
+text-transform: uppercase;
+color: var(--muted);
+}
+
+.ticker-wrap {
+overflow: hidden;
+width: 100%;
+margin-bottom: 10px;
+}
+
+.ticker-inner {
+display: inline-block;
+white-space: nowrap;
+animation: ticker 18s linear infinite;
+font-size: clamp(20px, 3.2vw, 40px);
+font-weight: 700;
+letter-spacing: -0.03em;
+color: var(--white);
+}
+
+.ticker-inner span { padding-right: clamp(40px, 8vw, 120px); }
+
+@keyframes ticker {
+0% { transform: translateX(0); }
+100% { transform: translateX(-50%); }
+}
+
+.subtitle {
+font-size: clamp(11.5px, 1.1vw, 14px);
+font-weight: 400;
+color: rgba(255, 255, 255, 0.678);
+line-height: 1.6;
+max-width: 460px;
+}
+
+/* ── MAIN CONTENT ───────────────────────── */
+main {
+flex: 1;
+display: flex;
+flex-direction: column;
+justify-content: center;
+width: 100%;
+}
+
+/* ── BOARDING PASS DESIGN CENTRÉ ─────────────────── */
+.boarding-pass {
+background: rgba(255,255,255,0.08);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border: 1px solid rgba(255,255,255,0.2);
+border-radius: 24px;
+position: relative;
+overflow: hidden;
+margin: 20px auto 20px auto; 
+display: flex;
+flex-direction: column;
+width: 100%;
+max-width: 550px; 
+box-shadow: 0 10px 32px rgba(0,0,0,0.3);
+}
+
+/* Perforations */
+.boarding-pass::before, .boarding-pass::after {
+content: '';
+position: absolute;
+top: 55px; 
+width: 24px;
+height: 24px;
+background: #151a21; 
+border-radius: 50%;
+z-index: 2;
+}
+.boarding-pass::before { left: -12px; }
+.boarding-pass::after { right: -12px; }
+
+.pass-header {
+padding: 18px 24px;
+background: rgba(255,255,255,0.04);
+border-bottom: 2px dashed rgba(255,255,255,0.18);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.pass-header-title {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(--muted);
+}
+
+.pass-body {
+padding: 28px 24px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.steps-list {
+list-style: none;
+}
+
+.step-item {
+display: flex;
+gap: 16px;
+margin-bottom: 22px;
+}
+
+.step-item:last-child {
+margin-bottom: 10px;
+}
+
+.step-num {
+font-weight: 700;
+color: var(--green);
+font-size: 16px;
+font-family: monospace;
+margin-top: 2px;
+}
+
+.step-text h3 {
+font-size: 14px;
+font-weight: 700;
+margin-bottom: 4px;
+}
+
+.step-text p {
+font-size: 12.5px;
+color: rgba(255,255,255,0.7);
+line-height: 1.5;
+}
+
+/* Option / Bouton d'action vidéo */
+.actions-container {
+display: flex;
+flex-direction: column;
+margin-top: 10px;
+}
+
+.video-option {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+background: rgba(255,255,255,0.08);
+padding: 12px 18px;
+border-radius: var(--radius);
+font-size: 12.5px;
+font-weight: 600;
+color: var(--white);
+cursor: pointer;
+transition: background 0.2s, transform 0.1s;
+border: 1px solid rgba(255,255,255,0.1);
+width: 100%;
+}
+
+.video-option:hover { 
+background: rgba(255,255,255,0.15); 
+border-color: rgba(255,255,255,0.25);
+}
+
+.video-option:active { transform: scale(0.98); }
+
+.play-badge {
+background: var(--white);
+color: var(--navy);
+width: 20px;
+height: 20px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+font-size: 10px;
+font-weight: bold;
+}
+
+/* ── LECTEUR MODAL ──────────────────────── */
+.video-modal {
+position: fixed;
+inset: 0;
+z-index: 100;
+background: rgba(0, 18, 40, 0.94);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s ease;
+padding: 20px;
+}
+.video-modal.active { opacity: 1; pointer-events: auto; }
+
+.video-wrapper {
+width: 100%;
+max-width: 450px;
+max-height: 70vh;
+border-radius: var(--radius);
+overflow: hidden;
+background: #000;
+border: 1px solid rgba(255,255,255,0.1);
+box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+video { width: 100%; height: 100%; max-height: 70vh; display: block; object-fit: contain; }
+
+.close-modal {
+margin-top: 20px;
+background: rgba(255,255,255,0.1);
+border: 1px solid rgba(255,255,255,0.2);
+color: var(--white);
+padding: 12px 32px;
+border-radius: 99px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 600;
+font-size: 14px;
+cursor: pointer;
+}
+
+/* ── FOOTER STYLE ORIGINAL AVEC ESPACEMENT ──────────────── */
+footer {
+padding: clamp(14px, 2.5vh, 24px) 0 clamp(20px, 3.5vh, 38px);
+flex-shrink: 0;
+text-align: center;
+border-top: 1px solid rgba(255,255,255,0.1);
+width: 100%;
+margin-top: 32px; 
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 20px; /* 🌟 Crée un espace parfait de 20px entre l'info et le bouton help */
+}
+
+.footer-msg {
+font-size: clamp(11px, 1.1vw, 13px);
+font-weight: 600;
+line-height: 1.5;
+max-width: 500px;
+margin: 0 auto;
+}
+
+.footer-msg span { color: var(--green); }
+
+/* Le bouton d'aide en pilule d'origine */
+.help-link {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+padding: 7px 16px 7px 7px;
+border: 1px solid rgba(255,255,255,0.18);
+border-radius: 99px;
+background: rgba(255,255,255,0.07);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.help-link:hover { background: rgba(255,255,255,0.12); }
+.help-link:active { transform: scale(0.96); }
+
+.help-circle {
+width: clamp(24px, 2.2vw, 30px);
+height: clamp(24px, 2.2vw, 30px);
+border-radius: 50%;
+background: var(--white);
+color: var(--navy);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: clamp(11px, 1vw, 14px);
+font-weight: 700;
+flex-shrink: 0;
+}
+
+.help-text {
+font-size: clamp(10.5px, 0.9vw, 12.5px);
+font-weight: 600;
+color: rgba(255,255,255,0.80);
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+footer {
+padding-bottom: calc(clamp(20px, 3.5vh, 38px) + env(safe-area-inset-bottom));
+}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+    <header>
+        <div class="brand">
+            <img class="brand-logo" src="./site_airbus/AIRBUS_Blue_logo.png" alt="Airbus logo" />
+            <div class="brand-sep"></div>
+            <span class="brand-name">Airbus - CockpitLab</span>
+        </div>
+        <div class="ticker-wrap">
+            <div class="ticker-inner">
+                <span>Welcome to CockpitLab</span>
+                <span class="dot">·</span>
+                <span>Boarding Pass Checklist</span>
+                <span class="dot">·</span>
+            </div>
+        </div>
+        <p class="subtitle">Scan the pass to review the instructions or watch the guide.</p>
+    </header>
+
+    <main>
+        <div class="boarding-pass">
+            <div class="pass-header">
+                <span class="pass-header-title">Cockpit Setup · Checklist</span>
+                <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.05em; color: var(--green);">GATE M01 - Floor 4</span>
+            </div>
+            
+            <div class="pass-body">
+                <div class="steps-list">
+                    <div class="step-item">
+                        <span class="step-num">01</span>
+                        <div class="step-text">
+                            <h3>Power Up</h3>
+                            <p>Walk to the right and reach down to the floor outlet and flip the switch to power up the set up.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-num">02</span>
+                        <div class="step-text">
+                            <h3>Connection</h3>
+                            <p>Press the button under the pedestal. You will hear a mechanical click and see a blue light.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-num">03</span>
+                        <div class="step-text">
+                            <h3>Configuration</h3>
+                            <p>Take a seat and plug the USB-C into your laptop. </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions-container">
+                    <div class="video-option" id="playBtn">
+                        <span class="play-badge">▶</span>
+                        Prefer a video guide? (30s)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="footer-msg">
+            Pas besoin de tout mémoriser ! <span>En cas d'oubli à une étape, il y aura un code QR sur le bureau pour vous aider !</span>
+        </p>
+        
+        <a class="help-link" href="mailto:garance.raynaud@airbus.com,aicha-eunice.kamssoko@airbus.com?subject=CockpitLab%20-%20Urgent%20Support%20Needed%20at%20Entrance">
+            <div class="help-circle">?</div>
+            <span class="help-text">Need more help? Contact us</span>
+        </a>
+    </footer>
+
+</div>
+
+<div class="video-modal" id="videoModal">
+    <div class="video-wrapper">
+        <video id="player" controls playsinline src="./site_airbus/door_vid.mp4"></video>
+    </div>
+    <button class="close-modal" id="closeBtn">Close Checklist</button>
+</div>
+
+<script>
+const playBtn = document.getElementById('playBtn');
+const modal = document.getElementById('videoModal');
+const player = document.getElementById('player');
+const closeBtn = document.getElementById('closeBtn');
+
+playBtn.addEventListener('click', () => {
+    modal.classList.add('active');
+    player.play();
+});
+
+closeBtn.addEventListener('click', closePlayer);
+player.addEventListener('ended', closePlayer);
+
+function closePlayer() {
+    modal.classList.remove('active');
+    player.pause();
+}
+</script>
+
+</body>
+</html>
